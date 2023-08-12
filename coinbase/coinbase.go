@@ -15,6 +15,10 @@ import (
 )
 
 func GetWalletData(route string) (*[]schema.WalletData, error) {
+	walletStart := time.Now()
+	defer func() {
+		fmt.Println("coinbase wallet execution time: ", time.Since(walletStart))
+	}()
 	if route == "" {
 		route = "/v2/accounts?&limit=100"
 	}
@@ -87,6 +91,10 @@ func GetWalletData(route string) (*[]schema.WalletData, error) {
 }
 
 func GetAccountBalance(walletData *[]schema.WalletData) (*float64, error) {
+	coinStart := time.Now()
+	defer func() {
+		fmt.Println("coin rate execution time: ", time.Since(coinStart))
+	}()
 	var acctBalance float64 = 0
 	for _, account := range *walletData {
 		if !strings.Contains(account.Balance.Amount, "0.0") {
@@ -94,7 +102,7 @@ func GetAccountBalance(walletData *[]schema.WalletData) (*float64, error) {
 			if err != nil {
 				fmt.Println("Error parsing balance:", err)
 			}
-			rate, err := GetCoinRate(account.Balance.Currency)
+			rate, err := getCoinRate(account.Balance.Currency)
 			if err != nil {
 				fmt.Println("Error getting coin rate:", err)
 			}
@@ -105,8 +113,8 @@ func GetAccountBalance(walletData *[]schema.WalletData) (*float64, error) {
 	return &acctBalance, nil
 }
 
-func GetCoinRate(coin string) (*float64, error) {
-		godotenv.Load(".env")
+func getCoinRate(coin string) (*float64, error) {
+	godotenv.Load(".env")
 	key := os.Getenv("EXCHANGE_KEY")
 	if key == "" {
 		fmt.Println("EXCHANGE_KEY is not set")

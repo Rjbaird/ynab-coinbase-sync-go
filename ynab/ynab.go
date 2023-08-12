@@ -9,7 +9,7 @@ import (
 	"bairrya.com/go/ynab-coinbase/schema"
 )
 
-func GetAccountBalance(token string, bID string, aID string) (*int64, error) {
+func GetAccountBalance(token string, bID string, aID string) (*float64, error) {
 	if token == "" {
 		fmt.Println("YNAB_TOKEN is not set")
 		return nil, fmt.Errorf("YNAB_TOKEN is not set")
@@ -55,7 +55,6 @@ func GetAccountBalance(token string, bID string, aID string) (*int64, error) {
 		return nil, err
 	}
 	account := schema.Budget{ Balance: response.Data.Account.Balance }
-	balance := account.Balance / 1000.0
-	fmt.Println(balance)
+	balance := float64(account.Balance / 1000.0)
 	return &balance, nil
 }
