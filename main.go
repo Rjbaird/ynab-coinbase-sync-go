@@ -15,10 +15,16 @@ func main() {
 	// accountID := os.Getenv("ACCOUNT_ID")
 
 	// ynab.GetAccountBalance(ynabToken, budgetID, accountID)
-	wallet, err := coinbase.GetWalletData()
+	wallet, err := coinbase.GetWalletData("")
 	if err != nil {
 		fmt.Println("Error getting wallet data:", err)
 		return
 	}
-	coinbase.GetAccountBalance(wallet)
+	balance, err := coinbase.GetAccountBalance(wallet)
+	if err != nil {
+		fmt.Println("Error getting account balance:", err)
+		return
+	}
+	usd := fmt.Sprintf("usd balance: %.0f", (*balance))
+	fmt.Println(usd)
 }
