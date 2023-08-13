@@ -1,6 +1,6 @@
 package schema
 
-type Coinbase404 struct {
+type CoinbaseError struct {
 	Errors []Errors `json:"errors"`
 }
 type Errors struct {
